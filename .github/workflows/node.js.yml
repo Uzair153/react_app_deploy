@@ -1,0 +1,57 @@
+name: Node.js CI
+'on':
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 16.x
+          - 18.x
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Use Node.js ${{ matrix.node-version }}'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '${{ matrix.node-version }}'
+          cache: npm
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
+        env: 'CI:true'
+  deploy:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: ssh deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: '${{ secrets.HOST }}'
+          username: '${{ secrets.USER }}'
+          key: '${{ secrets.KEY }}'
+          port: '${{ secrets.PORT }}'
+          script: >
+            curl -o-
+            https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh |
+            bash
+
+            . ~/.nvm/nvm.sh
+
+
+            nvm install 16
+
+            npm install -g pm2
+
+            cd ~/CICD
+
+            git pull origin master
+
+            npm install 
+
+            npm run build
+
+            pm2 restart api
