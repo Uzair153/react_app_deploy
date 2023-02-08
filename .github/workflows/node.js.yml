@@ -33,7 +33,7 @@ jobs:
           host: '${{ secrets.HOST }}'
           username: '${{ secrets.USER }}'
           key: '${{ secrets.KEY }}'
-          port: '${{ secrets.PORT }}'
+         
           script: >
             curl -o-
             https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh |
