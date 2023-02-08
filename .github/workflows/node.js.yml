@@ -30,9 +30,9 @@ jobs:
       - name: ssh deploy
         uses: appleboy/ssh-action@master
         with:
-          host: '${{ secrets.HOST }}'
-          username: '${{ secrets.USER }}'
-          key: '${{ secrets.KEY }}'
+          key: ${{ secrets.KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
          
           script: >
             curl -o-
