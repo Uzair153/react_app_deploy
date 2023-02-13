@@ -34,24 +34,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
          
-          script: >
-            curl -o-
-            https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh |
-            bash
-
-            . ~/.nvm/nvm.sh
-
-
-            nvm install 16
-
-            npm install -g pm2
-
-            cd ~/CICD
-
-            git pull origin master
-
-            npm install 
-
-            npm run build
-
-            pm2 restart api
+          script: |
+           sudo su
+           cd /home/ubuntu/CICD/react_app_deploy
+           npm -i
+           pm2 delete 0
+           pm2 start --name react npm -- start
